@@ -2,6 +2,18 @@
 
 Foundry를 사용한 Kaia 블록체인 개발 환경
 
+## 컨트랙트 목록
+
+### KaiaDID - 탈중앙화 신원 관리 시스템
+
+- **파일**: `src/KaiaDID.sol`
+- **기능**: 개인정보(이름, 생년월일, 주소, 전화번호)와 지갑 주소를 매칭하는 DID 컨트랙트
+- **주요 기능**:
+  - DID 생성 및 업데이트
+  - 신원 정보 조회
+  - DID 비활성화
+  - 관리자 기능 (모든 DID 조회, 소유권 이전)
+
 ## 프로젝트 구조
 
 ```
@@ -54,6 +66,8 @@ anvil
 
 ### Kaia 테스트넷 배포
 
+Counter 컨트랙트 배포:
+
 ```shell
 forge script script/Counter.s.sol:CounterScript \
   --rpc-url kaia-testnet \
@@ -61,10 +75,30 @@ forge script script/Counter.s.sol:CounterScript \
   --broadcast
 ```
 
+KaiaDID 컨트랙트 배포:
+
+```shell
+forge script script/KaiaDID.s.sol:KaiaDIDScript \
+  --rpc-url kaia-testnet \
+  --private-key $PRIVATE_KEY \
+  --broadcast
+```
+
 ### Kaia 메인넷 배포
+
+Counter 컨트랙트 배포:
 
 ```shell
 forge script script/Counter.s.sol:CounterScript \
+  --rpc-url kaia-mainnet \
+  --private-key $PRIVATE_KEY \
+  --broadcast
+```
+
+KaiaDID 컨트랙트 배포:
+
+```shell
+forge script script/KaiaDID.s.sol:KaiaDIDScript \
   --rpc-url kaia-mainnet \
   --private-key $PRIVATE_KEY \
   --broadcast
