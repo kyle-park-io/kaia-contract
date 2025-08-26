@@ -1,0 +1,26 @@
+# 컴파일된 파일들
+out/
+cache/
+broadcast/
+
+# 의존성
+node_modules/
+lib/
+
+# 환경 변수 (민감한 정보)
+.env
+
+# IDE 설정
+.vscode/
+.idea/
+
+# 시스템 파일
+.DS_Store
+Thumbs.db
+
+# 로그
+*.log
+
+# 테스트 커버리지
+lcov.info
+coverage/
