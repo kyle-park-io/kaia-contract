@@ -1,5 +1,10 @@
 # 🏙️ K-Citizenship Pass
 
+**LIVE DEMO**: https://kaiacity-pass.lovable.app/
+**YOUTUBE**: https://youtu.be/PmtFO-L-ltc
+
+---
+
 **Kaia 원화 스테이블 코인 해커톤** 출품작 - 탈중앙화 신원 관리 시스템(블록체인 기반 통합 디지털 시민증 플랫폼)
 
 개인정보와 지갑 주소를 매칭하는 DID(Decentralized Identity) 컨트랙트로, 블록체인 기반의 신원 인증 시스템을 제공합니다.
