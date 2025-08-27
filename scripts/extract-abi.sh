@@ -31,9 +31,9 @@ jq '.abi' out/KaiaDID3.sol/KaiaDID3.json >"$ABI_FILE"
 if [ $? -eq 0 ]; then
     echo "✅ KaiaDID3 ABI 추출 완료: $ABI_FILE"
 
-    # 최신 버전으로 심볼릭 링크 생성 (호환성을 위해)
-    ln -sf "KaiaDID3_${TIMESTAMP}.json" "abi/KaiaDID3_latest.json"
-    echo "📄 최신 ABI 링크 생성: abi/KaiaDID3_latest.json"
+    # 최신 버전으로 파일 복사 (호환성을 위해)
+    cp "$ABI_FILE" "abi/KaiaDID3_latest.json"
+    echo "📄 최신 ABI 파일 생성: abi/KaiaDID3_latest.json"
 else
     echo "❌ KaiaDID3 ABI 추출 실패"
     exit 1
@@ -58,8 +58,8 @@ for contract_dir in out/*/; do
                 jq '.abi' "$json_file" >"$contract_abi_file"
                 if [ $? -eq 0 ]; then
                     echo "✅ $contract_name ABI 추출 완료: $contract_abi_file"
-                    # 최신 버전 링크 생성
-                    ln -sf "${contract_name}_${TIMESTAMP}.json" "abi/${contract_name}_latest.json"
+                    # 최신 버전 파일 복사
+                    cp "$contract_abi_file" "abi/${contract_name}_latest.json"
                 else
                     echo "⚠️  $contract_name ABI 추출 실패"
                 fi

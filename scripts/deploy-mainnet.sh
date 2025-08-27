@@ -103,9 +103,9 @@ if [ $? -eq 0 ]; then
     
     if [ $? -eq 0 ]; then
         echo "✅ ${CONTRACT_NAME} ABI 추출 완료: $ABI_FILE"
-        # 최신 버전 링크 생성
-        ln -sf "${CONTRACT_NAME}_${TIMESTAMP}.json" "abi/${CONTRACT_NAME}_latest.json"
-        echo "📄 최신 ABI 링크 생성: abi/${CONTRACT_NAME}_latest.json"
+        # 최신 버전 파일 복사
+        cp "$ABI_FILE" "abi/${CONTRACT_NAME}_latest.json"
+        echo "📄 최신 ABI 파일 생성: abi/${CONTRACT_NAME}_latest.json"
     else
         echo "⚠️  ABI 추출 실패"
     fi
@@ -145,9 +145,9 @@ EOF
     echo "💾 배포 정보가 저장되었습니다: $DEPLOYMENT_FILE"
     echo "📄 ABI 파일이 준비되었습니다: $ABI_FILE"
     
-    # 최신 배포 정보 링크 생성
-    ln -sf "mainnet-${CONTRACT_NAME}_${TIMESTAMP}.json" "deployments/mainnet-${CONTRACT_NAME}_latest.json"
-    echo "📄 최신 배포 정보 링크: deployments/mainnet-${CONTRACT_NAME}_latest.json"
+    # 최신 배포 정보 파일 복사
+    cp "$DEPLOYMENT_FILE" "deployments/mainnet-${CONTRACT_NAME}_latest.json"
+    echo "📄 최신 배포 정보 파일: deployments/mainnet-${CONTRACT_NAME}_latest.json"
     
 else
     echo "❌ 배포 실패"

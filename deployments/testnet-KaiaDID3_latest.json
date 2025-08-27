@@ -1,1 +1,18 @@
-testnet-KaiaDID3_2025-08-27T03:20:52Z.json
+{
+  "network": "testnet",
+  "chainId": 1001,
+  "contract": "KaiaDID3",
+  "address": "0xf2556D5ce076afCbFEC583EBc0876f68FC39329A",
+  "deploymentTx": "0x4c095abf8945fd30e88f4c5ffc511d8c42d10093872b25e5c3b44a699873b148",
+  "blockNumber": "0xb99c7fd",
+  "timestamp": "2025-08-27T03:27:04Z",
+  "abi": "abi/KaiaDID3_20250827_122659.json",
+  "deployer": {
+    "gasLimit": "5000000",
+    "gasPrice": "25000000000"
+  },
+  "explorer": {
+    "contractUrl": "https://kairos.kaiascan.io/account/0xf2556D5ce076afCbFEC583EBc0876f68FC39329A",
+    "txUrl": "https://kairos.kaiascan.io/tx/0x4c095abf8945fd30e88f4c5ffc511d8c42d10093872b25e5c3b44a699873b148"
+  }
+}
