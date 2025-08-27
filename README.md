@@ -202,7 +202,7 @@ forge inspect src/KaiaDID3.sol:KaiaDID3 abi
 - **Chain ID**: 1001
 - **RPC**: https://public-en-kairos.node.kaia.io
 - **Explorer**: https://kairos.kaiascan.io
-- **Faucet**: https://kairos.wallet.kaia.io/faucet
+- **Faucet**: https://www.kaia.io/faucet
 
 ### Kaia 메인넷 - 프로덕션용
 
