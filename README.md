@@ -59,11 +59,23 @@ forge build
 ./scripts/deploy-mainnet.sh
 ```
 
-### 4. 배포 정보 확인
+### 4. ABI 추출
+
+배포 시 자동으로 ABI가 추출되지만, 별도로 추출하려면:
+
+```bash
+./scripts/extract-abi.sh
+```
+
+추출된 ABI 파일은 `abi/` 디렉토리에 저장됩니다.
+
+### 5. 배포 정보 확인
 
 ```bash
 cat deployments/testnet-KaiaDID.json
 ```
+
+배포 정보에는 컨트랙트 주소, 트랜잭션 해시, ABI 파일 경로 등이 포함됩니다.
 
 ## Foundry 기본 사용법
 

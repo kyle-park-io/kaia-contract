@@ -36,8 +36,9 @@ echo "  컨트랙트: $CONTRACT_NAME"
 echo "  가스 한도: $GAS_LIMIT"
 echo "  가스 가격: $GAS_PRICE"
 
-# deployments 디렉토리 생성
+# deployments 및 abi 디렉토리 생성
 mkdir -p deployments
+mkdir -p abi
 
 # 컨트랙트 컴파일
 echo "🔨 컨트랙트 컴파일 중..."
@@ -49,6 +50,16 @@ if [ $? -ne 0 ]; then
 fi
 
 echo "✅ 컴파일 완료"
+
+# ABI 추출
+echo "📄 ABI 추출 중..."
+jq '.abi' out/${CONTRACT_NAME}.sol/${CONTRACT_NAME}.json > abi/${CONTRACT_NAME}.json
+
+if [ $? -eq 0 ]; then
+    echo "✅ ${CONTRACT_NAME} ABI 추출 완료: abi/${CONTRACT_NAME}.json"
+else
+    echo "⚠️  ABI 추출 실패, 배포는 계속 진행합니다."
+fi
 
 # 배포 실행
 echo "🚀 배포 중..."
@@ -96,6 +107,7 @@ if [ $? -eq 0 ]; then
   "deploymentTx": "$TX_HASH",
   "blockNumber": "$BLOCK_NUMBER",
   "timestamp": "$TIMESTAMP",
+  "abi": "abi/${CONTRACT_NAME}.json",
   "deployer": {
     "gasLimit": "$GAS_LIMIT",
     "gasPrice": "$GAS_PRICE"
@@ -112,9 +124,11 @@ EOF
     echo "  컨트랙트 주소: $CONTRACT_ADDRESS"
     echo "  트랜잭션 해시: $TX_HASH"
     echo "  블록 번호: $BLOCK_NUMBER"
+    echo "  ABI 파일: abi/${CONTRACT_NAME}.json"
     echo "  탐색기: https://kairos.kaiascan.io/account/$CONTRACT_ADDRESS"
     echo ""
     echo "💾 배포 정보가 저장되었습니다: deployments/testnet-${CONTRACT_NAME}.json"
+    echo "📄 ABI 파일이 준비되었습니다: abi/${CONTRACT_NAME}.json"
     
 else
     echo "❌ 배포 실패"
