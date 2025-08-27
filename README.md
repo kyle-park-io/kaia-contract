@@ -223,6 +223,7 @@ cat deployments/testnet-KaiaDID3_latest.json
 
 **Kaia 원화 스테이블 코인 해커톤** 참여 프로젝트
 
+- **팀명**: Nexus Nomad
 - **프로젝트명**: K-Citizenship Pass - 블록체인 기반 통합 디지털 시민증 플랫폼
 - **목표**: 실용적인 블록체인 기반 신원 인증 시스템 구축
 - **기술 스택**: Solidity, Foundry, Kaia Blockchain
