@@ -1,26 +1,38 @@
-# 컴파일된 파일들
-out/
-cache/
-broadcast/
-
-# 의존성
-node_modules/
-lib/
-
-# 환경 변수 (민감한 정보)
+# 환경 설정
 .env
+.env.local
+.env.production
+.env.development
+.env.test
+*.key
+*.pem
+.secret
 
-# IDE 설정
+# 배포 정보 (공개 정보이므로 팀 공유 가능)
+# deployments/
+
+# IDE
 .vscode/
 .idea/
+*.swp
+*.swo
 
-# 시스템 파일
+# OS
 .DS_Store
 Thumbs.db
 
-# 로그
-*.log
+# Foundry
+cache/
+out/
+lib/
+# broadcast/ 폴더는 배포 기록이므로 팀 공유 시 포함할 수 있음
+broadcast/
 
-# 테스트 커버리지
-lcov.info
-coverage/
+# 로그 파일
+*.log
+logs/
+
+# 임시 파일
+*.tmp
+*.temp
+.cache/
