@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Kaia 테스트넷 배포 스크립트
+# Kaia 테스트넷 배포 스크립트 - KaiaDID3 전용
 
-echo "🚀 Kaia 테스트넷 배포 시작..."
+echo "🚀 KaiaDID3 Kaia 테스트넷 배포 시작..."
 
 # .env 파일 확인
 if [ ! -f .env ]; then
@@ -24,10 +24,8 @@ if [ -z "$KAIA_TESTNET_RPC" ]; then
     exit 1
 fi
 
-if [ -z "$CONTRACT_NAME" ]; then
-    echo "❌ CONTRACT_NAME이 설정되지 않았습니다."
-    exit 1
-fi
+# KaiaDID3로 고정
+CONTRACT_NAME="KaiaDID3"
 
 echo "📋 배포 정보:"
 echo "  네트워크: Kaia Testnet"
@@ -35,6 +33,9 @@ echo "  RPC: $KAIA_TESTNET_RPC"
 echo "  컨트랙트: $CONTRACT_NAME"
 echo "  가스 한도: $GAS_LIMIT"
 echo "  가스 가격: $GAS_PRICE"
+
+# 타임스탬프 생성
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 
 # deployments 및 abi 디렉토리 생성
 mkdir -p deployments
@@ -51,12 +52,16 @@ fi
 
 echo "✅ 컴파일 완료"
 
-# ABI 추출
+# ABI 추출 (타임스탬프 포함)
 echo "📄 ABI 추출 중..."
-jq '.abi' out/${CONTRACT_NAME}.sol/${CONTRACT_NAME}.json > abi/${CONTRACT_NAME}.json
+ABI_FILE="abi/${CONTRACT_NAME}_${TIMESTAMP}.json"
+jq '.abi' out/${CONTRACT_NAME}.sol/${CONTRACT_NAME}.json >"$ABI_FILE"
 
 if [ $? -eq 0 ]; then
-    echo "✅ ${CONTRACT_NAME} ABI 추출 완료: abi/${CONTRACT_NAME}.json"
+    echo "✅ ${CONTRACT_NAME} ABI 추출 완료: $ABI_FILE"
+    # 최신 버전 링크 생성
+    ln -sf "${CONTRACT_NAME}_${TIMESTAMP}.json" "abi/${CONTRACT_NAME}_latest.json"
+    echo "📄 최신 ABI 링크 생성: abi/${CONTRACT_NAME}_latest.json"
 else
     echo "⚠️  ABI 추출 실패, 배포는 계속 진행합니다."
 fi
@@ -80,13 +85,13 @@ echo "================="
 # 배포 결과 확인
 if [ $? -eq 0 ]; then
     echo "✅ 배포 성공!"
-    
+
     # 배포 정보 추출 및 JSON 저장
     TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
-    
+
     # 컨트랙트 주소 추출 (로그에서)
-    CONTRACT_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep -o "주소: 0x[a-fA-F0-9]*" | cut -d' ' -f2)
-    
+    CONTRACT_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep -o "Contract Address: 0x[a-fA-F0-9]*" | cut -d' ' -f3)
+
     # broadcast 폴더에서 실제 배포 정보 읽기
     BROADCAST_FILE="broadcast/${CONTRACT_NAME}.s.sol/1001/run-latest.json"
     if [ -f "$BROADCAST_FILE" ]; then
@@ -96,9 +101,10 @@ if [ $? -eq 0 ]; then
         TX_HASH=""
         BLOCK_NUMBER=""
     fi
-    
-    # JSON 파일 생성
-    cat > "deployments/testnet-${CONTRACT_NAME}.json" << EOF
+
+    # JSON 파일 생성 (타임스탬프 포함)
+    DEPLOYMENT_FILE="deployments/testnet-${CONTRACT_NAME}_${TIMESTAMP}.json"
+    cat >"$DEPLOYMENT_FILE" <<EOF
 {
   "network": "testnet",
   "chainId": 1001,
@@ -107,7 +113,7 @@ if [ $? -eq 0 ]; then
   "deploymentTx": "$TX_HASH",
   "blockNumber": "$BLOCK_NUMBER",
   "timestamp": "$TIMESTAMP",
-  "abi": "abi/${CONTRACT_NAME}.json",
+  "abi": "$ABI_FILE",
   "deployer": {
     "gasLimit": "$GAS_LIMIT",
     "gasPrice": "$GAS_PRICE"
@@ -118,18 +124,22 @@ if [ $? -eq 0 ]; then
   }
 }
 EOF
-    
+
     echo ""
     echo "📄 배포 정보:"
     echo "  컨트랙트 주소: $CONTRACT_ADDRESS"
     echo "  트랜잭션 해시: $TX_HASH"
     echo "  블록 번호: $BLOCK_NUMBER"
-    echo "  ABI 파일: abi/${CONTRACT_NAME}.json"
+    echo "  ABI 파일: $ABI_FILE"
     echo "  탐색기: https://kairos.kaiascan.io/account/$CONTRACT_ADDRESS"
     echo ""
-    echo "💾 배포 정보가 저장되었습니다: deployments/testnet-${CONTRACT_NAME}.json"
-    echo "📄 ABI 파일이 준비되었습니다: abi/${CONTRACT_NAME}.json"
-    
+    echo "💾 배포 정보가 저장되었습니다: $DEPLOYMENT_FILE"
+    echo "📄 ABI 파일이 준비되었습니다: $ABI_FILE"
+
+    # 최신 배포 정보 링크 생성
+    ln -sf "testnet-${CONTRACT_NAME}_${TIMESTAMP}.json" "deployments/testnet-${CONTRACT_NAME}_latest.json"
+    echo "📄 최신 배포 정보 링크: deployments/testnet-${CONTRACT_NAME}_latest.json"
+
 else
     echo "❌ 배포 실패"
     echo "$DEPLOY_OUTPUT"

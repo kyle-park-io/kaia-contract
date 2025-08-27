@@ -1,8 +1,11 @@
 #!/bin/bash
 
-# ABI 추출 스크립트
+# ABI 추출 스크립트 - KaiaDID3 전용
 
-echo "🔍 ABI 추출 시작..."
+echo "🔍 KaiaDID3 ABI 추출 시작..."
+
+# 타임스탬프 생성
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
 
 # abi 디렉토리 생성
 mkdir -p abi
@@ -18,49 +21,55 @@ fi
 
 echo "✅ 빌드 완료"
 
-# KaiaDID 컨트랙트 ABI 추출
-echo "📄 KaiaDID ABI 추출 중..."
+# KaiaDID3 컨트랙트 ABI 추출
+echo "📄 KaiaDID3 ABI 추출 중..."
 
-# JSON에서 ABI만 추출
-jq '.abi' out/KaiaDID.sol/KaiaDID.json > abi/KaiaDID.json
+# JSON에서 ABI만 추출 (타임스탬프 포함)
+ABI_FILE="abi/KaiaDID3_${TIMESTAMP}.json"
+jq '.abi' out/KaiaDID3.sol/KaiaDID3.json >"$ABI_FILE"
 
 if [ $? -eq 0 ]; then
-    echo "✅ KaiaDID ABI 추출 완료: abi/KaiaDID.json"
+    echo "✅ KaiaDID3 ABI 추출 완료: $ABI_FILE"
+
+    # 최신 버전으로 심볼릭 링크 생성 (호환성을 위해)
+    ln -sf "KaiaDID3_${TIMESTAMP}.json" "abi/KaiaDID3_latest.json"
+    echo "📄 최신 ABI 링크 생성: abi/KaiaDID3_latest.json"
 else
-    echo "❌ KaiaDID ABI 추출 실패"
+    echo "❌ KaiaDID3 ABI 추출 실패"
     exit 1
 fi
 
-# 다른 프로젝트 컨트랙트들도 추가로 추출
+# 다른 KaiaDID 컨트랙트들도 추가로 추출
 for contract_dir in out/*/; do
     if [ -d "$contract_dir" ]; then
         contract_name=$(basename "$contract_dir" .sol)
-        
+
         # Foundry 시스템 컨트랙트나 라이브러리는 제외
         if [[ "$contract_name" =~ ^(Base|console|console2|Counter|Test|Std|Vm|Script|IMulticall3|safeconsole) ]]; then
             continue
         fi
-        
-        # KaiaDID는 이미 처리했으므로 제외
-        if [[ "$contract_name" == "KaiaDID" ]]; then
-            continue
-        fi
-        
-        json_file="$contract_dir$contract_name.json"
-        if [ -f "$json_file" ]; then
-            echo "📄 $contract_name ABI 추출 중..."
-            jq '.abi' "$json_file" > "abi/$contract_name.json"
-            if [ $? -eq 0 ]; then
-                echo "✅ $contract_name ABI 추출 완료: abi/$contract_name.json"
-            else
-                echo "⚠️  $contract_name ABI 추출 실패"
+
+        # KaiaDID 관련 컨트랙트만 처리
+        if [[ "$contract_name" =~ ^KaiaDID[0-9]*$ ]]; then
+            json_file="$contract_dir$contract_name.json"
+            if [ -f "$json_file" ]; then
+                echo "📄 $contract_name ABI 추출 중..."
+                contract_abi_file="abi/${contract_name}_${TIMESTAMP}.json"
+                jq '.abi' "$json_file" >"$contract_abi_file"
+                if [ $? -eq 0 ]; then
+                    echo "✅ $contract_name ABI 추출 완료: $contract_abi_file"
+                    # 최신 버전 링크 생성
+                    ln -sf "${contract_name}_${TIMESTAMP}.json" "abi/${contract_name}_latest.json"
+                else
+                    echo "⚠️  $contract_name ABI 추출 실패"
+                fi
             fi
         fi
     fi
 done
 
 # TypeScript 타입 정의 생성 (선택사항)
-if command -v typechain &> /dev/null; then
+if command -v typechain &>/dev/null; then
     echo "🔄 TypeScript 타입 정의 생성 중..."
     mkdir -p types
     typechain --target ethers-v6 --out-dir types 'abi/*.json'

@@ -1,8 +1,8 @@
 #!/bin/bash
 
-# Kaia 메인넷 배포 스크립트
+# Kaia 메인넷 배포 스크립트 - KaiaDID3 전용
 
-echo "🚀 Kaia 메인넷 배포 시작..."
+echo "🚀 KaiaDID3 Kaia 메인넷 배포 시작..."
 echo "⚠️  메인넷 배포는 실제 KAIA를 소모합니다!"
 
 # 사용자 확인
@@ -32,10 +32,8 @@ if [ -z "$KAIA_MAINNET_RPC" ]; then
     exit 1
 fi
 
-if [ -z "$CONTRACT_NAME" ]; then
-    echo "❌ CONTRACT_NAME이 설정되지 않았습니다."
-    exit 1
-fi
+# KaiaDID3로 고정
+CONTRACT_NAME="KaiaDID3"
 
 echo "📋 배포 정보:"
 echo "  네트워크: Kaia Mainnet"
@@ -44,8 +42,12 @@ echo "  컨트랙트: $CONTRACT_NAME"
 echo "  가스 한도: $GAS_LIMIT"
 echo "  가스 가격: $GAS_PRICE"
 
+# 타임스탬프 생성
+TIMESTAMP=$(date +"%Y%m%d_%H%M%S")
+
 # deployments 디렉토리 생성
 mkdir -p deployments
+mkdir -p abi
 
 # 컨트랙트 컴파일
 echo "🔨 컨트랙트 컴파일 중..."
@@ -82,7 +84,7 @@ if [ $? -eq 0 ]; then
     TIMESTAMP=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
     
     # 컨트랙트 주소 추출 (로그에서)
-    CONTRACT_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep -o "주소: 0x[a-fA-F0-9]*" | cut -d' ' -f2)
+    CONTRACT_ADDRESS=$(echo "$DEPLOY_OUTPUT" | grep -o "Contract Address: 0x[a-fA-F0-9]*" | cut -d' ' -f3)
     
     # broadcast 폴더에서 실제 배포 정보 읽기
     BROADCAST_FILE="broadcast/${CONTRACT_NAME}.s.sol/8217/run-latest.json"
@@ -94,8 +96,23 @@ if [ $? -eq 0 ]; then
         BLOCK_NUMBER=""
     fi
     
-    # JSON 파일 생성
-    cat > "deployments/mainnet-${CONTRACT_NAME}.json" << EOF
+    # ABI 추출 (타임스탬프 포함)
+    echo "📄 ABI 추출 중..."
+    ABI_FILE="abi/${CONTRACT_NAME}_${TIMESTAMP}.json"
+    jq '.abi' out/${CONTRACT_NAME}.sol/${CONTRACT_NAME}.json > "$ABI_FILE"
+    
+    if [ $? -eq 0 ]; then
+        echo "✅ ${CONTRACT_NAME} ABI 추출 완료: $ABI_FILE"
+        # 최신 버전 링크 생성
+        ln -sf "${CONTRACT_NAME}_${TIMESTAMP}.json" "abi/${CONTRACT_NAME}_latest.json"
+        echo "📄 최신 ABI 링크 생성: abi/${CONTRACT_NAME}_latest.json"
+    else
+        echo "⚠️  ABI 추출 실패"
+    fi
+    
+    # JSON 파일 생성 (타임스탬프 포함)
+    DEPLOYMENT_FILE="deployments/mainnet-${CONTRACT_NAME}_${TIMESTAMP}.json"
+    cat > "$DEPLOYMENT_FILE" << EOF
 {
   "network": "mainnet",
   "chainId": 8217,
@@ -104,6 +121,7 @@ if [ $? -eq 0 ]; then
   "deploymentTx": "$TX_HASH",
   "blockNumber": "$BLOCK_NUMBER",
   "timestamp": "$TIMESTAMP",
+  "abi": "$ABI_FILE",
   "deployer": {
     "gasLimit": "$GAS_LIMIT",
     "gasPrice": "$GAS_PRICE"
@@ -120,10 +138,16 @@ EOF
     echo "  컨트랙트 주소: $CONTRACT_ADDRESS"
     echo "  트랜잭션 해시: $TX_HASH"
     echo "  블록 번호: $BLOCK_NUMBER"
+    echo "  ABI 파일: $ABI_FILE"
     echo "  탐색기: https://kaiascan.io/account/$CONTRACT_ADDRESS"
     echo ""
     echo "⚠️  컨트랙트 주소를 안전한 곳에 보관하세요!"
-    echo "💾 배포 정보가 저장되었습니다: deployments/mainnet-${CONTRACT_NAME}.json"
+    echo "💾 배포 정보가 저장되었습니다: $DEPLOYMENT_FILE"
+    echo "📄 ABI 파일이 준비되었습니다: $ABI_FILE"
+    
+    # 최신 배포 정보 링크 생성
+    ln -sf "mainnet-${CONTRACT_NAME}_${TIMESTAMP}.json" "deployments/mainnet-${CONTRACT_NAME}_latest.json"
+    echo "📄 최신 배포 정보 링크: deployments/mainnet-${CONTRACT_NAME}_latest.json"
     
 else
     echo "❌ 배포 실패"

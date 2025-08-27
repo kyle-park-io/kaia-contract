@@ -34,19 +34,24 @@
   },
   {
     "type": "function",
-    "name": "deactivateDID",
+    "name": "deactivateLatestDID",
     "inputs": [],
     "outputs": [],
     "stateMutability": "nonpayable"
   },
   {
     "type": "function",
-    "name": "didDocuments",
+    "name": "didDocumentHistory",
     "inputs": [
       {
         "name": "",
         "type": "address",
         "internalType": "address"
+      },
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "outputs": [
@@ -84,13 +89,18 @@
         "name": "updatedAt",
         "type": "uint256",
         "internalType": "uint256"
+      },
+      {
+        "name": "version",
+        "type": "uint256",
+        "internalType": "uint256"
       }
     ],
     "stateMutability": "view"
   },
   {
     "type": "function",
-    "name": "getAllActiveDIDs",
+    "name": "getAllActiveDIDAddresses",
     "inputs": [],
     "outputs": [
       {
@@ -103,7 +113,166 @@
   },
   {
     "type": "function",
-    "name": "getDID",
+    "name": "getAllDIDHistory",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct KaiaDID3.DIDDocument[]",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "birthDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "homeAddress",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "isActive",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "updatedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "version",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getAllRegisteredAddresses",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "address[]",
+        "internalType": "address[]"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDIDByVersion",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      },
+      {
+        "name": "version",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple",
+        "internalType": "struct KaiaDID3.DIDDocument",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "birthDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "homeAddress",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "isActive",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "updatedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "version",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getDIDVersionCount",
+    "inputs": [
+      {
+        "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getLatestDID",
     "inputs": [
       {
         "name": "user",
@@ -115,7 +284,7 @@
       {
         "name": "",
         "type": "tuple",
-        "internalType": "struct KaiaDID.DIDDocument",
+        "internalType": "struct KaiaDID3.DIDDocument",
         "components": [
           {
             "name": "name",
@@ -151,6 +320,11 @@
             "name": "updatedAt",
             "type": "uint256",
             "internalType": "uint256"
+          },
+          {
+            "name": "version",
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ]
       }
@@ -159,13 +333,68 @@
   },
   {
     "type": "function",
-    "name": "getMyDID",
+    "name": "getMyAllDIDHistory",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "tuple[]",
+        "internalType": "struct KaiaDID3.DIDDocument[]",
+        "components": [
+          {
+            "name": "name",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "birthDate",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "homeAddress",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "phone",
+            "type": "string",
+            "internalType": "string"
+          },
+          {
+            "name": "isActive",
+            "type": "bool",
+            "internalType": "bool"
+          },
+          {
+            "name": "createdAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "updatedAt",
+            "type": "uint256",
+            "internalType": "uint256"
+          },
+          {
+            "name": "version",
+            "type": "uint256",
+            "internalType": "uint256"
+          }
+        ]
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "getMyLatestDID",
     "inputs": [],
     "outputs": [
       {
         "name": "",
         "type": "tuple",
-        "internalType": "struct KaiaDID.DIDDocument",
+        "internalType": "struct KaiaDID3.DIDDocument",
         "components": [
           {
             "name": "name",
@@ -201,6 +430,11 @@
             "name": "updatedAt",
             "type": "uint256",
             "internalType": "uint256"
+          },
+          {
+            "name": "version",
+            "type": "uint256",
+            "internalType": "uint256"
           }
         ]
       }
@@ -209,7 +443,7 @@
   },
   {
     "type": "function",
-    "name": "getTotalDIDs",
+    "name": "getTotalActiveDIDs",
     "inputs": [],
     "outputs": [
       {
@@ -222,10 +456,42 @@
   },
   {
     "type": "function",
-    "name": "hasDID",
+    "name": "getTotalRegisteredAddresses",
+    "inputs": [],
+    "outputs": [
+      {
+        "name": "",
+        "type": "uint256",
+        "internalType": "uint256"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasActiveDIDPublic",
     "inputs": [
       {
         "name": "user",
+        "type": "address",
+        "internalType": "address"
+      }
+    ],
+    "outputs": [
+      {
+        "name": "",
+        "type": "bool",
+        "internalType": "bool"
+      }
+    ],
+    "stateMutability": "view"
+  },
+  {
+    "type": "function",
+    "name": "hasRegistered",
+    "inputs": [
+      {
+        "name": "",
         "type": "address",
         "internalType": "address"
       }
@@ -327,6 +593,12 @@
         "type": "string",
         "indexed": false,
         "internalType": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -340,6 +612,12 @@
         "type": "address",
         "indexed": true,
         "internalType": "address"
+      },
+      {
+        "name": "version",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
@@ -359,6 +637,12 @@
         "type": "string",
         "indexed": false,
         "internalType": "string"
+      },
+      {
+        "name": "version",
+        "type": "uint256",
+        "indexed": false,
+        "internalType": "uint256"
       }
     ],
     "anonymous": false
